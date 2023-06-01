@@ -13,6 +13,40 @@ class Product(models.Model):
     def __str__(self):
         return self.name
 
+class Customer(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    address = models.TextField()
+    city = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
+    zipcode = models.CharField(max_length=10)
+
+    def __str__(self):
+        return self.name
+
+class Order(models.Model):
+    customer = models.ForeignKey(Customer, on_delete=models.SET_NULL, null=True)
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    address = models.CharField(max_length=200,default='new')
+    city = models.CharField(max_length=100)
+    state = models.CharField(max_length=100)
+    zipcode = models.CharField(max_length=10)
+    order_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Order #{self.pk}"
+
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField()
+
+    def __str__(self):
+        return f"{self.product.name} ({self.quantity})"
+
+
 
 class Cart(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
@@ -26,9 +60,10 @@ class Cart(models.Model):
         return f"Cart for {self.user.username}"
 
 class CartItem(models.Model):
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.IntegerField(default=1)
+    cart = models.ForeignKey('Cart', on_delete=models.CASCADE)
+    product = models.ForeignKey('Product', on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+    order = models.ForeignKey('Order', on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
-        return f"{self.product} - Quantity: {self.quantity}"
+        return f"CartItem #{self.pk}"

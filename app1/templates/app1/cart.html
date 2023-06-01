@@ -1,3 +1,5 @@
+<!-- cart.html -->
+
 {% extends 'base.html' %}
 
 {% block content %}
@@ -18,17 +20,17 @@
           <tr>
             <td>{{ item.product.name }}</td>
             <td>{{ item.product.price }}</td>
-            
             <td>
-                <a href="{% url 'increase-quantity' item.id %}" class="btn btn-primary">+</a>{{ item.quantity }}
-                <a href="{% url 'decrease-quantity' item.id %}" class="btn btn-primary">-</a>
+              <a href="{% url 'decrease-quantity' item.id %}" class="btn btn-primary">-</a>
+              {{ item.quantity }}
+              <a href="{% url 'increase-quantity' item.id %}" class="btn btn-primary">+</a>
             </td>
             <td>{{ item.total_price }}</td>
-
           </tr>
         {% endfor %}
       </tbody>
     </table>
+    <a href="{% url 'place-order' %}" class="btn btn-primary">Place Order</a>
   </div>
   <!-- Cart Items -->
 {% endblock %}
