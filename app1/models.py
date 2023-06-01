@@ -36,12 +36,18 @@ class Order(models.Model):
 
     def __str__(self):
         return f"Order #{self.pk}"
+    
+    def total_price(self):
+        order_items = self.orderitem_set.all()
+        return sum(item.product.price * item.quantity for item in order_items)
 
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField()
+
+    
 
     def __str__(self):
         return f"{self.product.name} ({self.quantity})"
@@ -55,7 +61,9 @@ class Cart(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     total_price = models.DecimalField(max_digits=8, decimal_places=2, default=0)
 
-
+    def total_price(self):
+        return sum(product.price for product in self.products.all())
+    
     def __str__(self):
         return f"Cart for {self.user.username}"
 

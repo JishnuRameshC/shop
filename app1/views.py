@@ -145,7 +145,9 @@ def submit_order(request):
     return render(request, 'submit_order.html')
 
 
-
+def order_success(request):
+    order = Order.objects.last() 
+    return render(request, 'app1/order_success.html', {'order': order})
 
 
 def order_history(request):
@@ -157,5 +159,4 @@ def thank_you(request, order_id):
     return render(request, 'app1/thank_you.html', {'order': order})
 
 
-def order_success(request):
-    return render(request, 'app1/order_success.html')
+
